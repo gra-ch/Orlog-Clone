@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include <random>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -26,10 +27,11 @@ int main()
     }
 
     // asking player to pick out dices (each have 3 round)
-    unsigned int x = -1, round = 0;
-    while (x != 0 && round < 3) {
+    std::string input = "";
+    unsigned int round = 0;
+    while (round < 3 && allDices.size() != 0) {
         // push what dice faces it rolled out to rollOut array
-        for (size_t i = 0; i < 6; ++i) {
+        for (size_t i = 0; i < allDices.size(); ++i) {
             rollOut.emplace_back(allDices[i][randOneToSix(generator)]);
         }
 
@@ -38,22 +40,38 @@ int main()
             std::cout << "Dice " << it - rollOut.begin() + 1 << ": " << *it << std::endl;
         }
 
-        std::cout << "Enter 0 to end this round" << std::endl;
-        std::cout << "You choose dice? (Enter 0 to end this round): ";
-        std::cin >> x;
-        chosen.emplace_back(rollOut.at(x - 1));
-
-        // display choosen disces
-        std::cout << "You choose: ";
-        for (std::vector<std::string>::const_iterator it = chosen.begin(); it != chosen.end(); ++it) {
-            if (it - chosen.begin() == 2) {
-                std::cout << *it;
-            } else {
-                std::cout << *it << ", ";
-            }
+        std::cout << "You choose dice? : ";
+        getline(std::cin, input);
+        std::istringstream ss(input);
+        std::string word = "";
+        std::vector<int> arr = {};
+        std::vector<int> arr2 = {};
+        while (ss >> word) {
+            int x = std::stoi(word);
+            arr.emplace_back(x - 1);
         }
-        std::cout << std::endl;
-        
+        sort(arr.begin(), arr.end());
+
+        for (size_t i = 0; i < arr.size(); ++i) {
+            chosen.emplace_back(rollOut.at(arr[i]));
+            allDices.erase(allDices.begin() + arr[i] - i);
+        }
+
+        if (rollOut.size() == 0) {
+            break;
+        }
         ++round;
+        rollOut.clear();
     }
+
+    // display choosen disces
+    std::cout << "You choose: ";
+    for (std::vector<std::string>::const_iterator it = chosen.begin(); it != chosen.end(); ++it) {
+        if (it - chosen.begin() == 5) {
+            std::cout << *it;
+        } else {
+            std::cout << *it << ", ";
+        }
+    }
+    std::cout << std::endl;
 }
