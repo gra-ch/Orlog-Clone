@@ -42,6 +42,8 @@ int main()
 
         std::cout << "You choose dice? : ";
         getline(std::cin, input);
+        
+        // split the input string into number
         std::istringstream ss(input);
         std::string word = "";
         std::vector<int> arr = {};
@@ -52,14 +54,12 @@ int main()
         }
         sort(arr.begin(), arr.end());
 
+        // save the chosen dices and remove it from allDices
         for (size_t i = 0; i < arr.size(); ++i) {
             chosen.emplace_back(rollOut.at(arr[i]));
             allDices.erase(allDices.begin() + arr[i] - i);
         }
 
-        if (rollOut.size() == 0) {
-            break;
-        }
         ++round;
         rollOut.clear();
     }
