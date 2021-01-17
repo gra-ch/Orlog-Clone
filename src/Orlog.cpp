@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include <random>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -11,8 +12,12 @@ int main()
     std::default_random_engine generator(seed);
     std::uniform_int_distribution<int> randOneToTen(0, 9);
     std::uniform_int_distribution<int> randOneToSix(0, 5);
-    unsigned int hp = 15;
+    unsigned int myHp = 15;
+    unsigned int competitorHp = 15;
+    unsigned int myGold = 0;
+    unsigned int competitorGold = 0;
     std::string allWays[10] = { "Axe", "Arrow", "Helmet", "Shield", "Steal", "Axe (Gold)", "Arrow (Gold)", "Helmet (Gold)", "Shield (Gold)", "Steal (Gold)" };
+    std::string competitorDices[6] = { "Axe", "Arrow", "Helmet", "Shield", "Steal", "Axe (Gold)" };
     std::vector<std::vector<std::string>> allDices;
     std::vector<std::string> rollOut = {};
     std::vector<std::string> chosen = {};
@@ -42,7 +47,7 @@ int main()
 
         std::cout << "You choose dice? : ";
         getline(std::cin, input);
-        
+
         // split the input string into number
         std::istringstream ss(input);
         std::string word = "";
@@ -74,4 +79,20 @@ int main()
         }
     }
     std::cout << std::endl;
+
+    // TODO: decide which side better
+    
+
+    // collect coins
+    for (std::string& choose : chosen) {
+        if (choose.find("(Gold)") != std::string::npos) {
+            ++myGold;
+        }
+    }
+
+    if (myHp > competitorHp) {
+        std::cout << "Player 1 wins";
+    } else {
+        std::cout << "Player 2 wins";
+    }
 }
