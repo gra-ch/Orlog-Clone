@@ -30,6 +30,7 @@ public:
 
 class Player {
 private:
+    std::string name;
     Dices diceGrp;
     std::vector<std::string> rollOut = {};
     std::vector<std::string> chosen = {};
@@ -45,8 +46,13 @@ private:
     };
 
 public:
-    Player(unsigned int seed, std::string (&allWays)[10])
-        : diceGrp(seed, allWays) { }
+    Player(unsigned int seed, std::string (&allWays)[10], std::string name)
+        : diceGrp(seed, allWays)
+        , name(name) { }
+
+    std::string getName() {
+        return name;
+    }
 
     void setHp(int pass_hp) {
         hp = pass_hp;
@@ -106,12 +112,12 @@ public:
         for (std::vector<std::string>::const_iterator it = rollOut.begin(); it != rollOut.end(); ++it) {
             std::cout << "Dice " << it - rollOut.begin() + 1 << ": " << *it << std::endl;
         }
-        std::cout << "You choose dice? : ";
+        std::cout << name << " choose dice? : ";
     }
 
     // display choosen disces
     void display() {
-        std::cout << "You choose: ";
+        std::cout << name << " choose: ";
         for (std::vector<std::string>::const_iterator it = chosen.begin(); it != chosen.end(); ++it) {
             if (it - chosen.begin() == 5) {
                 std::cout << *it;
@@ -147,8 +153,8 @@ int main() {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::string allWays[10] = { "Axe", "Arrow", "Helmet", "Shield", "Steal", "Axe (Gold)", "Arrow (Gold)", "Helmet (Gold)", "Shield (Gold)", "Steal (Gold)" };
     std::string noGoldWays[5] = { "Axe", "Arrow", "Helmet", "Shield", "Steal" };
-    Player player1(seed, allWays);
-    Player player2(seed, allWays);
+    Player player1(seed, allWays, "Player 1");
+    Player player2(seed, allWays, "Player 2");
     Player order[2] = { player1, player2 };
     std::string competitorDices[6] = { "Axe", "Arrow", "Helmet", "Shield", "Steal", "Axe (Gold)" };
     // DONE: create dice class and put these to player class
@@ -156,6 +162,7 @@ int main() {
     // asking player to pick out dices (each have 3 round)
     std::string input = "";
     for (auto&& player : order) {
+        std::cout << "<---- It is " << player.getName() << " turn ---->" << std::endl;
         while (player.getRound() < 3 && player.getAllDices().size() != 0) {
             player.rollDices();
             player.prompt();
@@ -193,9 +200,11 @@ int main() {
     }
     player2.addGold(-player1.getMarks()["Steal"]);
 
-    if (player1.getHp() > player2.getHp()) {
-        std::cout << "Player 1 wins" << std::endl;
+    if (player1.getHp() == player2.getHp()) {
+        std::cout << "Draw!" << std::endl;
+    } else if (player1.getHp() > player2.getHp()) {
+        std::cout << "Player 1 wins!" << std::endl;
     } else {
-        std::cout << "Player 2 wins" << std::endl;
+        std::cout << "Player 2 wins!" << std::endl;
     }
 }
