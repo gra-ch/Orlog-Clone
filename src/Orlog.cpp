@@ -10,6 +10,18 @@ class Player {
 private:
     unsigned int hp = 15;
     unsigned int gold = 0;
+    std::map<std::string, int> marks {
+        { "Axe", 0 },
+        { "Arrow", 0 },
+        { "Helmet", 0 },
+        { "Shield", 0 },
+        { "Steal", 0 },
+        { "Axe (Gold)", 0 },
+        { "Arrow (Gold)", 0 },
+        { "Helmet (Gold)", 0 },
+        { "Shield (Gold)", 0 },
+        { "Steal (Gold)", 0 },
+    };
 
 public:
     void setHp(int pass_hp) {
@@ -27,6 +39,14 @@ public:
     int getGold() {
         return gold;
     }
+
+    void addMark(std::string way) {
+        marks[way] += 1;
+    }
+
+    std::map<std::string, int> getMarks() {
+        return marks;
+    }
 };
 
 int main() {
@@ -37,8 +57,10 @@ int main() {
     Player player1;
     Player player2;
     std::string allWays[10] = { "Axe", "Arrow", "Helmet", "Shield", "Steal", "Axe (Gold)", "Arrow (Gold)", "Helmet (Gold)", "Shield (Gold)", "Steal (Gold)" };
+    std::string noGoldWays[5] = { "Axe", "Arrow", "Helmet", "Shield", "Steal" };
     std::string competitorDices[6] = { "Axe", "Arrow", "Helmet", "Shield", "Steal", "Axe (Gold)" };
-    std::vector<std::vector<std::string>> allDices;
+    // TODO: create dice class and put these to player class
+    std::vector< std::vector<std::string> > allDices;
     std::vector<std::string> rollOut = {};
     std::vector<std::string> chosen = {};
 
@@ -101,6 +123,20 @@ int main() {
     std::cout << std::endl;
 
     // TODO: decide which side better
+    for (std::string& way : noGoldWays) {
+        for (std::string& choose : chosen) {
+            if (choose.find(way) != std::string::npos) {
+                player1.addMark(way);
+            }
+        }
+    }
+    for (std::string& way : noGoldWays) {
+        for (std::string& choose : competitorDices) {
+            if (choose.find(way) != std::string::npos) {
+                player2.addMark(way);
+            }
+        }
+    }
 
     // collect coins
     for (std::string& choose : chosen) {
