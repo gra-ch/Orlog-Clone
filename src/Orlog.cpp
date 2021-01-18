@@ -9,18 +9,13 @@
 class Player {
 private:
     unsigned int hp = 15;
-    unsigned int gold = 0;
+    unsigned int gold = 10;
     std::map<std::string, int> marks {
         { "Axe", 0 },
         { "Arrow", 0 },
         { "Helmet", 0 },
         { "Shield", 0 },
         { "Steal", 0 },
-        { "Axe (Gold)", 0 },
-        { "Arrow (Gold)", 0 },
-        { "Helmet (Gold)", 0 },
-        { "Shield (Gold)", 0 },
-        { "Steal (Gold)", 0 },
     };
 
 public:
@@ -60,7 +55,7 @@ int main() {
     std::string noGoldWays[5] = { "Axe", "Arrow", "Helmet", "Shield", "Steal" };
     std::string competitorDices[6] = { "Axe", "Arrow", "Helmet", "Shield", "Steal", "Axe (Gold)" };
     // TODO: create dice class and put these to player class
-    std::vector< std::vector<std::string> > allDices;
+    std::vector<std::vector<std::string>> allDices;
     std::vector<std::string> rollOut = {};
     std::vector<std::string> chosen = {};
 
@@ -122,7 +117,7 @@ int main() {
     }
     std::cout << std::endl;
 
-    // TODO: decide which side better
+    // TODO: collect the marks
     for (std::string& way : noGoldWays) {
         for (std::string& choose : chosen) {
             if (choose.find(way) != std::string::npos) {
@@ -138,6 +133,22 @@ int main() {
         }
     }
 
+    // TODO: decide which side better
+    if (player1.getMarks()["Axe"] > player2.getMarks()["Helmet"]) {
+        player2.setHp(player2.getHp() - (player1.getMarks()["Axe"] - player2.getMarks()["Helmet"]));
+    }
+    if (player1.getMarks()["Arrow"] > player2.getMarks()["Shield"]) {
+        player2.setHp(player2.getHp() - (player1.getMarks()["Arrow"] - player2.getMarks()["Shield"]));
+    }
+    if (player2.getMarks()["Axe"] > player1.getMarks()["Helmet"]) {
+        player1.setHp(player1.getHp() - (player2.getMarks()["Axe"] - player1.getMarks()["Helmet"]));
+    }
+    if (player2.getMarks()["Arrow"] > player1.getMarks()["Shield"]) {
+        player1.setHp(player1.getHp() - (player2.getMarks()["Arrow"] - player1.getMarks()["Shield"]));
+    }
+    player1.addGold(-player2.getMarks()["Steal"]);
+    player2.addGold(-player1.getMarks()["Steal"]);
+
     // collect coins
     for (std::string& choose : chosen) {
         if (choose.find("(Gold)") != std::string::npos) {
@@ -146,8 +157,8 @@ int main() {
     }
 
     if (player1.getHp() > player2.getHp()) {
-        std::cout << "Player 1 wins";
+        std::cout << "Player 1 wins" << std::endl;
     } else {
-        std::cout << "Player 2 wins";
+        std::cout << "Player 2 wins" << std::endl;
     }
 }
