@@ -1,14 +1,35 @@
 #include <chrono>
 #include <iostream>
+#include <map>
 #include <random>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "Player.h"
+class Player {
+private:
+    unsigned int hp = 15;
+    unsigned int gold = 0;
 
-int main()
-{
+public:
+    void setHp(int pass_hp) {
+        hp = pass_hp;
+    }
+
+    int getHp() {
+        return hp;
+    }
+
+    void addGold(int amount) {
+        gold += amount;
+    }
+
+    int getGold() {
+        return gold;
+    }
+};
+
+int main() {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
     std::uniform_int_distribution<int> randOneToTen(0, 9);
