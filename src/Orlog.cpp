@@ -105,6 +105,12 @@ public:
             chosen.emplace_back(rollOut.at(arr[i]));
             diceGrp.allDices.erase(diceGrp.allDices.begin() + arr[i] - i);
         }
+        if (round == 2 && chosen.size() < 6) {
+            for (auto&& item : rollOut) {
+                chosen.emplace_back(item);
+            }
+            diceGrp.allDices.clear();
+        }
     }
 
     // display the dice faces and ask for input
